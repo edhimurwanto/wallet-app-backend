@@ -1,3 +1,5 @@
+'use strict';
+
 import { EntitySchema } from 'typeorm';
 import Transaction from '../../models/transaction.model';
 
