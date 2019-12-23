@@ -1,3 +1,5 @@
+'use strict';
+
 import { EntitySchema } from 'typeorm';
 import Customer from '../../models/customer.model';
 

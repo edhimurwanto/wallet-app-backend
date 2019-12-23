@@ -1,59 +1,88 @@
-import { Router } from 'express';
 import CustomerService from '../services/customer.service';
-
 const customerService = new CustomerService();
+const Joi = require('@hapi/joi');
 
-export default Router()
-    .get('/', async (req, res) => {
-        try {
-            const data = await customerService.findAll();
+module.exports = [
+    {
+        method: 'GET',
+        path: '/customers',
+        handler: async (request, h) => {
 
-            res.json({ data });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
+            const customers = await customerService.findAll();
+            return h.response({
+                statusCode: 200,
+                customers
+            }).code(200);
         }
-    })
+    },
+    {
+        method: 'GET',
+        path: '/customers/{id}',
+        handler: async (request, h) => {
 
-    .get('/:id', async (req, res) => {
-        try {
-            const data = await customerService.findOne(req.param.id);
-
-            res.json({ data });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
+            const customer = await customerService.findOne(request.id);
+            return h.response({
+                statusCode: 200,
+                customer
+            }).code(200);
         }
-    })
-
-    .post('/', async (req, res) => {
-        try {
-
-            let customer = { ...req.body };
-
-            customer = await customerService.create(req.body);
-
-            res.status(201).json(customer);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
+    },
+    {
+        method: 'POST',
+        path: '/customers',
+        config: {
+            handler: async (request, h) => {
+                const customer = await customerService.create(request.payload);
+                return h.response({
+                    statusCode: 201,
+                    customer
+                }).code(201);
+            },
+            validate: {
+                payload: {
+                    fullname: Joi.string().max(100).required(),
+                    email: Joi.string().email().required(),
+                    password: Joi.string().min(6).max(200).required(),
+                    birthdate: Joi.date().required(),
+                }
+            }
         }
-    })
-
-    .put('/', async (req, res) => {
-        try {
-            const customer = { ...req.body };
-
-            const updatedCustomer = await customerService.update(customer);
-            res.json(updatedCustomer);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
+    },
+    {
+        method: 'PUT',
+        path: '/customers',
+        config: {
+            handler: async (request, h) => {
+                const customer = await customerService.update(request.payload);
+                return h.response({
+                    statusCode: 200,
+                    customer
+                }).code(200);
+            },
+            validate: {
+                payload: {
+                    id: Joi.required(),
+                    fullname: Joi.string().max(100).required(),
+                    email: Joi.string().email().required(),
+                    password: Joi.string().min(6).max(200).required(),
+                    birthdate: Joi.date().required(),
+                }
+            }
         }
-    })
+    },
+    {
+        method: 'DELETE',
+        path: '/customers/{id}',
+        config: {
+            handler: async (request, h) => {
 
-    .delete('/:id', async (req, res) => {
-        try {
-            const { id } = req.params;
-            await customerService.delete(id);
-            res.sendStatus(204);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
+                const { id } = request.params;
+
+                await customerService.delete(id);
+            },
+            response: {
+                emptyStatusCode: 204
+            },
         }
-    })
+    },
+];

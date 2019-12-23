@@ -16,7 +16,7 @@ export default class CustomerService {
     }
 
     findByEmail(email) {
-        return this.customerRepository().findOne({email});
+        return this.customerRepository().findOne({ email });
     }
 
     async create(customerData) {
@@ -25,11 +25,14 @@ export default class CustomerService {
         return this.customerRepository().save(customerData);
     }
 
-    update(customerData) {
+    async update(customerData) {
         const id = `${customerData.id}`;
         let customer = this.customerRepository().findOne(id);
-        if (customer) return this.customerRepository().save(customerData);
-
+        if (customer) {
+            const { password } = customerData;
+            customerData.password = await this.beforeCreate(password);
+            return this.customerRepository().save(customerData);
+        }
     }
 
     async beforeCreate(password) {
