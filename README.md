@@ -1,10 +1,10 @@
 # wallet-app
-Simple wallet-app project
+Simple wallet-app project with Hapi JS
 ## Getting Started
 
 ```
-git clone https://github.com/edhiuchiha/wallet-app.git
-cd wallet-app
+https://github.com/edhiuchiha/wallet-app-backend.git
+cd wallet-app-backend
 ```
 
 ### Installing
