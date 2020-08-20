@@ -14,7 +14,7 @@
     "@hapi/code": "^7.0.0",
     "@hapi/hapi": "^18.4.0",
     "@hapi/lab": "^21.0.0",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
